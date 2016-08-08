@@ -397,6 +397,11 @@ function deg2rad(deg) {
   return rad;
 }
 
+function rad2deg(radians) {
+  var rad = radians * 180 / Math.PI;
+  return rad;
+}
+
 
 // round to the nearest 1/1000
 function round(x) {
@@ -448,7 +453,80 @@ var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; 
 
   console.log(maxLon); console.log(minLon); console.log(maxLat); console.log(minLat); //we have the radmon min max parameters for gps data points
 
+// calc area of all data - return iteration number to fill quadrents------------
+var dist1 = distance(minLon,maxLat,maxLon,maxLat);
+var dist2 = distance(minLon,maxLat,minLon,minLat);
+var iAmount = (dist1 * dist2) / (0.25 * 0.25); //get the total sq km of area and divide by 0.25km^2 (250m^2) quadrents to get amount of quadrents to create
+console.log(iAmount);
+//end calc area of all data - return iteration number to fill quadrents---------
 
+//Construct .25km or 250m quadrents covering Denver, or max GPS bounday---------
+  function boundBuilder(lon, lat) {
+
+    var nwLon = lon;
+    var nwLat = lat;
+    var seLon = lon + 0.00292;
+    var seLat = lat - 0.00292;
+    var swLon = lon;
+    var swLat = lat - 0.00292;
+    var neLon = lon + 0.00292;
+    var neLat = lat;
+
+  // console.log('nwLon :' + nwLon);
+  // console.log('nwLat :' + nwLat);
+  // console.log('seLon :' + seLon);
+  // console.log('seLat :' + seLat);
+  // console.log('swLon :' + swLon);
+  // console.log('swLat :' + swLat);
+  // console.log('neLon :' + neLon);
+  // console.log('neLat :' + neLat);
+  // console.log('xxx');
+  return [nwLon,nwLat,seLon,seLat,swLon,swLat,neLon,neLat];
+
+//http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
+//   If your displacements aren't too great (less than a few kilometers) and you're not right at the poles, use the quick and dirty estimate
+// that 111,111 meters (111.111 km) in the y direction is 1 degree (of latitude) and 111,111 * cos(latitude) meters in the x direction
+// is 1 degree (of longitude). !!! I used 250m = 0.00292 degrees --> should be 250m = .00225 degrees. I altered based on great circle distance calc. Works out to 0.249551 km
+// 111,111m = 1 degree , 1m = .000009 degrees , 250m = .00225 degrees
+  }
+
+  //boundBuilder(-105.048462, 39.7945448);
+var quadData = [];
+var newLon = -105.048462;
+var newLat = 39.7945448;
+var rowCnt = 1;
+
+for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance formula
+
+  var returnArr = boundBuilder(newLon, newLat); // to start min lon and max lat ==> NW corner
+  quadData[i] = {nwLon:0};
+  quadData[i].nwLon = returnArr[0];
+  quadData[i].nwLat = returnArr[1];
+  quadData[i].seLon = returnArr[2];
+  quadData[i].seLat = returnArr[3];
+  quadData[i].swLon = returnArr[4];
+  quadData[i].swLat = returnArr[5];
+  quadData[i].neLon = returnArr[6];
+  quadData[i].neLat = returnArr[7];
+  quadData[i].allData = returnArr[1] + ', ' + returnArr[0] + ' ' + returnArr[3] + ', ' + returnArr[2] + ' ' + returnArr[5] + ', ' + returnArr[4] + ' ' + returnArr[7] + ', ' + returnArr[6];
+
+  if (quadData[i].neLon > maxLon ) {
+    var newLat = maxLat - 0.00292 * rowCnt;
+    var newLon = minLon;
+    rowCnt++;
+    console.log('lon break: ' + i);
+  }
+  else {
+    var newLon = returnArr[6];
+    var newLat = returnArr[7];
+  }
+
+}
+console.log(quadData);
+// var dist = distance(-105.048462,39.7945448,-105.045542,39.7945448);
+// console.log(dist);
+
+//End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----
 
 
 // end big algo ------------------------------------------------------------------------------------
