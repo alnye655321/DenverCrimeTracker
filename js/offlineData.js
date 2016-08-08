@@ -1,6 +1,6 @@
 //http://www.nyedesign.org/DenverCrimeAPI/index.php?day=friday&hour=05
 
-var offlineData =[
+var testData = [
    {
      "INDEX": 0,
      "INCIDENT_ID": "201364162",
@@ -8047,6 +8047,6 @@ var offlineData =[
      "PRECINCT_ID": "422",
      "NEIGHBORHOOD_ID": "college-view-south-platte"
    }
- ]
+ ];
 
  //console.log(offlineData[446].GEO_LON);

@@ -1,7 +1,7 @@
 // Build Random GPS data array matching input data array length----------------
 var testDataRandom = []; // empty array for random data. !!! possibly perfect random function for more random numbers !!!
 
-  for (var i = 0; i < testData.length; i++) { // build random array of objects --> only index, lat, lon data. Save as fixed string to 7th decimal place, same as original JSON data
+  for (var i = 0; i < testData.length; i++) { // build random array of objects --> only index, lat, lon data. Save as fixed string to 7th decimal place, same as original JSON data. testData = full array of JSON objects
     testDataRandom[i] = { //random object i
       INDEX: i,
       GEO_LON: (Math.random() * (maxLon - minLon) + minLon).toFixed(7),
