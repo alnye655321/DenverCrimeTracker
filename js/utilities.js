@@ -8194,7 +8194,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   quadData[i].neLat = returnArr[7];
   quadData[i].allData = returnArr[1] + ', ' + returnArr[0] + ' ' + returnArr[3] + ', ' + returnArr[2] + ' ' + returnArr[5] + ', ' + returnArr[4] + ' ' + returnArr[7] + ', ' + returnArr[6];
 
-  if (quadData[i].neLon > maxLon ) {
+  if (quadData[i].neLon > maxLon ) { //if we exceed max distance east (maxLon) then reset to furthest west (minLon) and drop 250m in latitude
     var newLat = maxLat - 0.00292 * rowCnt;
     var newLon = minLon;
     rowCnt++;
