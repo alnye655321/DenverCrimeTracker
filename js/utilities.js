@@ -8124,6 +8124,30 @@ function round(x) {
   }
 //Close Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------
 
+//median function for array of numbers - returns average if even length array
+function median(values) {
+
+    values.sort( function(a,b) {return a - b;} );
+
+    var half = Math.floor(values.length/2);
+
+    if(values.length % 2)
+        return values[half];
+    else
+        return (values[half-1] + values[half]) / 2.0;
+}
+//close median function
+
+//average function - returns average from array of numbers
+function average(arr) {
+  var total = 0;
+  for(var i = 0; i < arr.length; i++) {
+      total += arr[i];
+  }
+  return total / arr.length;
+}
+//close average function
+
 //close functions---------------------------close functions-------------------close functions-------
 
 // big algo ---------------------------big algo---------------------------big algo------------------
@@ -8205,7 +8229,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
     var newLat = maxLat - 0.00292 * rowCnt;
     var newLon = minLon;
     rowCnt++;
-    console.log('lon break: ' + i);
+    //console.log('lon break: ' + i);
   }
   else { //keep building quadrents in eastward direction
     var newLon = returnArr[6];
@@ -8223,8 +8247,8 @@ for (var i = 0; i < testData.length; i++) {
   var geoLat = testData[i].GEO_LAT;
   var geoLonNum = parseFloat(geoLon); //convert string numbers to actual numbers
   var geoLatNum = parseFloat(geoLat); //convert string numbers to actual numbers
-  console.log('origLon'); console.log(geoLonNum); console.log('origLon');
-  console.log('origLat'); console.log(geoLatNum); console.log('origLat');
+  //console.log('origLon'); console.log(geoLonNum); console.log('origLon');
+  //console.log('origLat'); console.log(geoLatNum); console.log('origLat');
 
   for (var y = 0; y < quadData.length; y++) { //quadData.length
 
@@ -8237,7 +8261,7 @@ for (var i = 0; i < testData.length; i++) {
     if (nwLonQuadData <= geoLonNum && geoLonNum <= seLonQuadData && nwLatQuadData >= geoLatNum && geoLatNum >= seLatQuadData) { //testing if point is within quadrent boundary
       quadData[y].crimeCount = quadData[y].crimeCount + 1; //add an additional crime to this quadrent
       quadData[y].indexList = quadData[y].indexList + ',' + index;
-      console.log('xxx' + y);
+      //console.log('xxx' + y);
     }
   }
 
@@ -8251,14 +8275,20 @@ quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0]
 });
 
 var highCrimeCount = quadData[0].crimeCount;
+var CrimeCountArray = []; //push crime count values to array to find median, avg etc. later
 
 for (var i = 0; i < quadData.length; i++) {
   if(quadData[i].crimeCount == 0) { break; } // stop loop once we start getting to empty data
   quadData[i].percentageMax = (quadData[i].crimeCount / highCrimeCount) * 100 ; //set percentage of max crime quadrent
+  CrimeCountArray.push(quadData[i].crimeCount); //push crime count to array
 }
-
-console.log(quadData);
 //Close Set crime as percentage of highest crime count per quandrent--------------------------------
+var average = average(CrimeCountArray);
+console.log(quadData);
+
+
+
+
 
 // end big algo ----------------------big algo----------------------------big algo------------------
 
