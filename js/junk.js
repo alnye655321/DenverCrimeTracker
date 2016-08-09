@@ -29,6 +29,32 @@ function median(values) {
 }
 //close median function
 
+//untouched google maps code
+function initMap() {
+  console.log('mapinit');
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 39.7392, lng: -104.9903},
+    mapTypeId: 'terrain'
+  });
+
+  var rectangle = new google.maps.Rectangle({
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35,
+    map: map,
+    bounds: {
+      north: 39.747287,
+      south: 39.744367,
+      east: -104.99192399999994,
+      west: -104.99484399999994
+    }
+  });
+}
+//untouched google maps code
+
 //Fill in quad crime data counts - if within gps boundary increase the counts
 for (var i = 0; i < testData.length; i++) {
   var index = testData[i].INDEX;
