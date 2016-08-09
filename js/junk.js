@@ -14,3 +14,34 @@ function randomMinMax(maxLon, minLon, maxLat, minLat, lon, lat){ // !!! not work
         }
 
 }
+
+
+//Fill in quad crime data counts - if within gps boundary increase the counts
+for (var i = 0; i < testData.length; i++) {
+  var index = testData[i].INDEX;
+  var geoLon = testData[i].GEO_LON;
+  var geoLat = testData[i].GEO_LAT;
+  var geoLonNum = parseFloat(geoLon); //convert string numbers to actual numbers
+  var geoLatNum = parseFloat(geoLat); //convert string numbers to actual numbers
+
+  for (var y = 0; y < 1; y++) { //quadData.length
+    console.log('origLon'); console.log(geoLonNum); console.log('origLon');
+    console.log('origLat'); console.log(geoLatNum); console.log('origLat');
+    //quadData[y].crimeCount = 0; // set an initial crime count of 0, adds additional with boundary test below
+    quadData[y].indexList = ''; // add the index's of each crime to the quadrent data, for verification...
+    var nwLatQuadData = quadData[y].nwLat;
+    var swLatQuadData = quadData[y].swLat;
+    var nwLonQuadData = quadData[y].nwLon;
+    var neLonQuadData = quadData[y].neLon;
+console.log(nwLatQuadData); console.log(swLatQuadData); console.log(nwLonQuadData); console.log(neLonQuadData);
+    if (geoLatNum < nwLatQuadData && geoLatNum > swLatQuadData && geoLonNum > nwLatQuadData && geoLonNum < neLonQuadData) {//testing if point is within quadrent boundary
+      //quadData[y].crimeCount = quadData[y].crimeCount + 1; //add an additional crime to this quadrent
+      quadData[y].indexList = quadData[y].indexList + ',' + index;
+      console.log('xxx');
+    }
+  }
+
+}
+
+console.log(quadData);
+//close Fill in quad crime data counts

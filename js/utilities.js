@@ -8054,6 +8054,7 @@ var testData = [
  ];
 //close test data --------------------------------------------------------------
 
+//start distance between 2 gps coordinates
 // http://andrew.hedges.name/experiments/haversine/
 function distance(lon1,lat1,lon2,lat2){
 
@@ -8076,8 +8077,8 @@ function distance(lon1,lat1,lon2,lat2){
   // round the results down to the nearest 1/1000
   //mi = round(dm);
   //return round(dk);
-
 }
+// close distance between 2 gps coordinates
 
 // convert degrees to radians
 function deg2rad(deg) {
@@ -8099,6 +8100,28 @@ function round(x) {
 //console.log(distance(-104.9358971, 39.6750974, -104.9322724, 39.6778582 ));
 //var tempDist = distance(geoLon, geoLat, testData[y].GEO_LON, testData[y].GEO_LAN);
 
+//Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------------
+  function boundBuilder(lon, lat) {
+
+    var nwLon = lon;
+    var nwLat = lat;
+    var seLon = lon + 0.00292;
+    var seLat = lat - 0.00292;
+    var swLon = lon;
+    var swLat = lat - 0.00292;
+    var neLon = lon + 0.00292;
+    var neLat = lat;
+
+
+  return [nwLon,nwLat,seLon,seLat,swLon,swLat,neLon,neLat];
+
+//http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
+//   If your displacements aren't too great (less than a few kilometers) and you're not right at the poles, use the quick and dirty estimate
+// that 111,111 meters (111.111 km) in the y direction is 1 degree (of latitude) and 111,111 * cos(latitude) meters in the x direction
+// is 1 degree (of longitude). !!! I used 250m = 0.00292 degrees --> should be 250m = .00225 degrees. I altered based on great circle distance calc. Works out to 0.249551 km
+// 111,111m = 1 degree , 1m = .000009 degrees , 250m = .00225 degrees
+  }
+//Close Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------
 
 // big algo ----------------------------------------------------------------------------------------
 
@@ -8152,38 +8175,18 @@ var iAmount = (dist1 * dist2) / (0.25 * 0.25); //get the total sq km of area and
 console.log(iAmount);
 //end calc area of all data - return iteration number to fill quadrents---------
 
-//Construct .25km or 250m quadrents covering Denver, or max GPS bounday---------
-  function boundBuilder(lon, lat) {
-
-    var nwLon = lon;
-    var nwLat = lat;
-    var seLon = lon + 0.00292;
-    var seLat = lat - 0.00292;
-    var swLon = lon;
-    var swLat = lat - 0.00292;
-    var neLon = lon + 0.00292;
-    var neLat = lat;
-
-
-  return [nwLon,nwLat,seLon,seLat,swLon,swLat,neLon,neLat];
-
-//http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
-//   If your displacements aren't too great (less than a few kilometers) and you're not right at the poles, use the quick and dirty estimate
-// that 111,111 meters (111.111 km) in the y direction is 1 degree (of latitude) and 111,111 * cos(latitude) meters in the x direction
-// is 1 degree (of longitude). !!! I used 250m = 0.00292 degrees --> should be 250m = .00225 degrees. I altered based on great circle distance calc. Works out to 0.249551 km
-// 111,111m = 1 degree , 1m = .000009 degrees , 250m = .00225 degrees
-  }
-
-  //boundBuilder(-105.048462, 39.7945448);
+//Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------------
 var quadData = [];
-var newLon = -105.048462;
-var newLat = 39.7945448;
+var newLon = minLon; // -105.048462
+var newLat = maxLat; // 39.7945448
 var rowCnt = 1;
 
 for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance formula
 
-  var returnArr = boundBuilder(newLon, newLat); // to start min lon and max lat ==> NW corner
+  var returnArr = boundBuilder(newLon, newLat); // to start min lon and max lat ==> NW corner newLon, newLat
   quadData[i] = {nwLon:0};
+  quadData[i].crimeCount = 0; // set an initial crime count of 0, adds additional with boundary test below
+  quadData[i].indexList = ''; // add the index's of each crime to the quadrent data, for verification...
   quadData[i].nwLon = returnArr[0];
   quadData[i].nwLat = returnArr[1];
   quadData[i].seLon = returnArr[2];
@@ -8206,12 +8209,43 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   }
 
 }
+
+//End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-------------------------
+
+//Fill in quad crime data counts - if within gps boundary increase the counts
+for (var i = 0; i < testData.length; i++) {
+  var index = testData[i].INDEX;
+  var geoLon = testData[i].GEO_LON;
+  var geoLat = testData[i].GEO_LAT;
+  var geoLonNum = parseFloat(geoLon); //convert string numbers to actual numbers
+  var geoLatNum = parseFloat(geoLat); //convert string numbers to actual numbers
+  console.log('origLon'); console.log(geoLonNum); console.log('origLon');
+  console.log('origLat'); console.log(geoLatNum); console.log('origLat');
+
+  for (var y = 0; y < quadData.length; y++) { //quadData.length
+
+    var nwLonQuadData = parseFloat(quadData[y].nwLon);
+    var nwLatQuadData = parseFloat(quadData[y].nwLat);
+    var seLonQuadData = parseFloat(quadData[y].seLon);
+    var seLatQuadData = parseFloat(quadData[y].seLat);
+
+//console.log(nwLatQuadData); console.log(swLatQuadData); console.log(nwLonQuadData); console.log(neLonQuadData);
+    if (nwLonQuadData <= geoLonNum && geoLonNum <= seLonQuadData && nwLatQuadData >= geoLatNum && geoLatNum >= seLatQuadData) { //testing if point is within quadrent boundary
+      quadData[y].crimeCount = quadData[y].crimeCount + 1; //add an additional crime to this quadrent
+      quadData[y].indexList = quadData[y].indexList + ',' + index;
+      console.log('xxx' + y);
+    }
+  }
+
+}
+//close Fill in quad crime data counts
+
+
+quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0].crimeCount = highest amount of crime in quadrent
+    return b.crimeCount - a.crimeCount;
+});
+
 console.log(quadData);
-// var dist = distance(-105.048462,39.7945448,-105.045542,39.7945448);
-// console.log(dist);
-
-//End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----
-
 
 // end big algo ------------------------------------------------------------------------------------
 
