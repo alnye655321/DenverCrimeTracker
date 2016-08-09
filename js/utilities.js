@@ -8054,6 +8054,7 @@ var testData = [
  ];
 //close test data --------------------------------------------------------------
 
+//functions---------------------------functions-------------------------------functions-------------
 //start distance between 2 gps coordinates
 // http://andrew.hedges.name/experiments/haversine/
 function distance(lon1,lat1,lon2,lat2){
@@ -8123,9 +8124,11 @@ function round(x) {
   }
 //Close Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------
 
-// big algo ----------------------------------------------------------------------------------------
+//close functions---------------------------close functions-------------------close functions-------
 
-// Set Data Object Array nearest neighbor & near neighbor distance values
+// big algo ---------------------------big algo---------------------------big algo------------------
+
+// Set Data Object Array nearest neighbor & near neighbor distance values---------------------------
 var nn = 0; //nearest neighbor - index value
 var nnd = 1000000; //near neighbor - distance value !!! Metric KM !!!- set to large value 1 million km, will decrease in loop to find min distance
 var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; // look for min and max values to define random coordinator generator range
@@ -8159,8 +8162,8 @@ var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; 
     testData[i].nn = nn;
     testData[i].nnd = nnd;
   }
-  console.log(testData);
-// End Set Data Object Array nearest neighbor & near neighbor distance values
+  //console.log(testData);
+// End Set Data Object Array nearest neighbor & near neighbor distance values-----------------------
 
   if(maxLat > 39.791087) { maxLat = 39.791087; } // set max range of denver city limits - in case we get some weird gps data
   if(minLat < 39.653177) { minLat = 39.653177; } // set max range of denver city limits - in case we get some weird gps data
@@ -8168,18 +8171,18 @@ var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; 
   if(maxLon > -104.825191) { maxLon = -104.825191; } // set max range of denver city limits - in case we get some weird gps data
   console.log(maxLon); console.log(minLon); console.log(maxLat); console.log(minLat); //we have the radmon min max parameters for gps data points
 
-// calc area of all data - return iteration number to fill quadrents------------
+// calc area of all data - return iteration number to fill quadrents--------------------------------
 var dist1 = distance(minLon,maxLat,maxLon,maxLat);
 var dist2 = distance(minLon,maxLat,minLon,minLat);
 var iAmount = (dist1 * dist2) / (0.25 * 0.25); //get the total sq km of area and divide by 0.25km^2 (250m^2) quadrents to get amount of quadrents to create
 console.log(iAmount);
-//end calc area of all data - return iteration number to fill quadrents---------
+//end calc area of all data - return iteration number to fill quadrents-----------------------------
 
 //Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------------
-var quadData = [];
+var quadData = []; // array of quadrent objects
 var newLon = minLon; // -105.048462
 var newLat = maxLat; // 39.7945448
-var rowCnt = 1;
+var rowCnt = 1; // used as a multiplier to shift down to next level of latitude once we reach the end of a quadrent row
 
 for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance formula
 
@@ -8187,6 +8190,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   quadData[i] = {nwLon:0};
   quadData[i].crimeCount = 0; // set an initial crime count of 0, adds additional with boundary test below
   quadData[i].indexList = ''; // add the index's of each crime to the quadrent data, for verification...
+  quadData[i].percentageMax = 0; // set initial property of the percentage of max crime quadrent
   quadData[i].nwLon = returnArr[0];
   quadData[i].nwLat = returnArr[1];
   quadData[i].seLon = returnArr[2];
@@ -8203,7 +8207,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
     rowCnt++;
     console.log('lon break: ' + i);
   }
-  else {
+  else { //keep building quadrents in eastward direction
     var newLon = returnArr[6];
     var newLat = returnArr[7];
   }
@@ -8212,7 +8216,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
 
 //End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-------------------------
 
-//Fill in quad crime data counts - if within gps boundary increase the counts
+//Fill in quad crime data counts - if within gps boundary increase the counts-----------------------
 for (var i = 0; i < testData.length; i++) {
   var index = testData[i].INDEX;
   var geoLon = testData[i].GEO_LON;
@@ -8238,16 +8242,25 @@ for (var i = 0; i < testData.length; i++) {
   }
 
 }
-//close Fill in quad crime data counts
+//console.log(quadData); --> unsorted array - in original quadrent pattern - left to right starting in north west corner
+//close Fill in quad crime data counts--------------------------------------------------------------
 
-
+//Set crime as percentage of highest crime count per quandrent--------------------------------------
 quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0].crimeCount = highest amount of crime in quadrent
     return b.crimeCount - a.crimeCount;
 });
 
-console.log(quadData);
+var highCrimeCount = quadData[0].crimeCount;
 
-// end big algo ------------------------------------------------------------------------------------
+for (var i = 0; i < quadData.length; i++) {
+  if(quadData[i].crimeCount == 0) { break; } // stop loop once we start getting to empty data
+  quadData[i].percentageMax = (quadData[i].crimeCount / highCrimeCount) * 100 ; //set percentage of max crime quadrent
+}
+
+console.log(quadData);
+//Close Set crime as percentage of highest crime count per quandrent--------------------------------
+
+// end big algo ----------------------big algo----------------------------big algo------------------
 
 
 
