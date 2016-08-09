@@ -4,6 +4,8 @@
 
   console.log('test');
   }());
+
+
 // end doc ready ---------------------------------------------------------------
 
 //test data---------------------------------------------------------------------
@@ -8286,44 +8288,55 @@ for (var i = 0; i < quadData.length; i++) {
   CrimeCountArray.push(quadData[i].crimeCount); //push crime count to array
 }
 //Close Set crime as percentage of highest crime count per quandrent--------------------------------
-var average = average(CrimeCountArray);
-console.log(quadData);
+var average = average(CrimeCountArray) + 1; // !!! Get rid of +1 !!!
+var run = true; //running the google map
+//console.log(quadData);
 
 // end big algo ----------------------big algo----------------------------big algo------------------
 
-var tester = "tester";
+// New Google map --------------------------------------------------------------
+window.map;
 
+function initMap() {
 
-
-function initMap(quadData, average) {
-  console.log('xxx');
-  console.log(tester);
-  var avg = average +1;
-
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 15,
+  console.log('mapinit');
+  window.map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
     center: {lat: 39.7392, lng: -104.9903},
     mapTypeId: 'terrain'
   });
+}
 
-  var rectangles = [];
-  for (var i = 0; i < quadData.length; i++) {
+var rectangles = [];
+function checkVariable() {
 
-    if(quadData[i].crimeCount < avg) { break; } // stop loop once we start getting to empty data
-    var rectangle = new google.maps.Rectangle({
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map,
-      bounds: {
-        north: quadData[i].neLat,
-        south: quadData[i].seLat,
-        east:  quadData[i].neLon,
-        west:  quadData[i].nwLon
-      }
-    });
+  if(run==true){
+    console.log(quadData);
+    for (var i = 0; i < quadData.length; i++) {
+      if(quadData[i].crimeCount == 2) { break; }
+      rectangles[i] = new google.maps.Rectangle({
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+        map: map,
+        bounds: {
+          north: quadData[i].neLat,
+          south: quadData[i].seLat,
+          east:  quadData[i].neLon,
+          west:  quadData[i].nwLon
+        }
+      });
+    }
   }
 
 }
+
+setTimeout(checkVariable,1000); //check if run variable is set after every second
+//Close New Google Map --------------------------------------------------------------
+
+// north: 39.747287,
+// south: 39.744367,
+// east: -104.99192399999994,
+// west: -104.99484399999994
