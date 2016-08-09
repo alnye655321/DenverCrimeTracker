@@ -8228,10 +8228,10 @@ for (var i = 0; i < testData.length; i++) {
 
   for (var y = 0; y < quadData.length; y++) { //quadData.length
 
-    var nwLonQuadData = parseFloat(quadData[y].nwLon);
-    var nwLatQuadData = parseFloat(quadData[y].nwLat);
-    var seLonQuadData = parseFloat(quadData[y].seLon);
-    var seLatQuadData = parseFloat(quadData[y].seLat);
+    var nwLonQuadData = quadData[y].nwLon;
+    var nwLatQuadData = quadData[y].nwLat;
+    var seLonQuadData = quadData[y].seLon;
+    var seLatQuadData = quadData[y].seLat;
 
 //console.log(nwLatQuadData); console.log(swLatQuadData); console.log(nwLonQuadData); console.log(neLonQuadData);
     if (nwLonQuadData <= geoLonNum && geoLonNum <= seLonQuadData && nwLatQuadData >= geoLatNum && geoLatNum >= seLatQuadData) { //testing if point is within quadrent boundary
