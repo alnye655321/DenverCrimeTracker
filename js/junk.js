@@ -15,6 +15,15 @@ function randomMinMax(maxLon, minLon, maxLat, minLat, lon, lat){ // !!! not work
 
 }
 
+//get set color based on decimal percentage - from green to red - hsl color can pass into google maps
+function getColor(value){
+    //value from 0 to 1
+    var hue=((1-value)*120).toString(10);
+    return ["hsl(",hue,",100%,50%)"].join("");
+}
+console.log(getColor(.9));
+// close get set color based on decimal percentage
+
 //median function for array of numbers - returns average if even length array
 function median(values) {
 
