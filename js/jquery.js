@@ -57,6 +57,10 @@ function rad2deg(radians) {
   return rad;
 }
 
+function percentCalc (value,total){
+  return (value / total) * 100;
+}
+
 
 // round to the nearest 1/1000
 function round(x) {
@@ -306,6 +310,24 @@ function checkVariable() {
           west:  quadData[i].nwLon
         }
       });
+      //start adding event listners - still in loop for each quadrant box
+      let rect = rectangles[i];
+      let quadTemp = quadData[i];
+      rectangles[i].addListener('click', function() {
+        var ne = rect.getBounds().getNorthEast();
+        //var sw = rectangle.getBounds().getSouthWest();
+      //console.log(rect);
+        let total = quadTemp.allOtherCrimes + quadTemp.aggravatedAssault + quadTemp.autoTheft + quadTemp.burglary + quadTemp.drugAlcohol + quadTemp.larceny + quadTemp.publicDisorder + quadTemp.robbery + quadTemp.theftFromVehicle;
+        var contentString = '<div id="container" style="min-width: 600px; height: 400px; max-width: 600px; margin: 0 auto"></div>';
+
+        // Set the info window's content and position.
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(ne);
+
+        infoWindow.open(map);
+        makeChart(percentCalc(quadTemp.allOtherCrimes,total), percentCalc(quadTemp.aggravatedAssault,total), percentCalc(quadTemp.autoTheft,total), percentCalc(quadTemp.burglary,total), percentCalc(quadTemp.drugAlcohol,total), percentCalc(quadTemp.larceny,total), percentCalc(quadTemp.publicDisorder,total), percentCalc(quadTemp.robbery,total), percentCalc(quadTemp.theftFromVehicle,total) );
+      });
+      //close adding event listners
     }//close for loop for drawing multiple rectangles
   }
 
@@ -354,3 +376,104 @@ function initMap() {
   infoWindow = new google.maps.InfoWindow();
 
 }
+
+//Chart Generator Function -----------------------------------------------------
+function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlcohol,larceny,publicDisorder,robbery,theftFromVehicle) {
+    $('#container').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Crime Data From Quadrant'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Crimes',
+            colorByPoint: true,
+            data: [{
+                name: 'AllOtherCrimes',
+                y: allOtherCrimes
+            }, {
+                name: 'AggravatedAssault',
+                y: aggravatedAssault,
+                selected: true
+            }, {
+                name: 'AutoTheft',
+                y: autoTheft
+            }, {
+                name: 'Burglary',
+                y: burglary
+            }, {
+                name: 'Drug/Alcohol',
+                y: drugAlcohol
+            }, {
+                name: 'Larceny',
+                y: larceny
+            }, {
+                name: 'PublicDisorder',
+                y: publicDisorder
+
+            }, {
+                name: 'Robbery',
+                y: robbery
+
+            }, {
+                name: 'TheftFromVehicle',
+                y: theftFromVehicle
+
+            }]
+        }]
+    });
+}
+//Close Chart Generator Function -----------------------------------------------
+
+// data: [{
+//     name: 'AllOtherCrimes',
+//     y: allOtherCrimes
+// }, {
+//     name: 'AggravatedAssault',
+//     y: aggravatedAssault,
+//     selected: true
+// }, {
+//     name: 'AutoTheft',
+//     y: autoTheft
+// }, {
+//     name: 'Burglary',
+//     y: burglary
+// }, {
+//     name: 'Drug/Alcohol',
+//     y: drugAlcohol
+// }, {
+//     name: 'Larceny',
+//     y: larceny
+// }, {
+//     name: 'PublicDisorder',
+//     y: publicDisorder
+//
+// }, {
+//     name: 'Robbery',
+//     y: robbery
+//
+// }, {
+//     name: 'TheftFromVehicle',
+//     y: theftFromVehicle
+//
+// }]
