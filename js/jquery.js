@@ -189,6 +189,15 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   quadData[i].crimeCount = 0; // set an initial crime count of 0, adds additional with boundary test below
   quadData[i].indexList = ''; // add the index's of each crime to the quadrent data, for verification...
   quadData[i].percentageMax = 0; // set initial property of the percentage of max crime quadrent
+  quadData[i].allOtherCrimes = 0; //set initial counts for types of crimes
+  quadData[i].aggravatedAssault = 0; //set initial counts for types of crimes...
+  quadData[i].autoTheft = 0;
+  quadData[i].burglary = 0;
+  quadData[i].drugAlcohol = 0;
+  quadData[i].larceny = 0;
+  quadData[i].publicDisorder = 0;
+  quadData[i].robbery = 0;
+  quadData[i].theftFromVehicle = 0;
   quadData[i].nwLon = returnArr[0];
   quadData[i].nwLat = returnArr[1];
   quadData[i].seLon = returnArr[2];
@@ -217,6 +226,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
 //Fill in quad crime data counts - if within gps boundary increase the counts-----------------------
 for (var i = 0; i < testData.length; i++) {
   var index = testData[i].INDEX;
+  var crimeType = testData[i].OFFENSE_CATEGORY_ID;
   var geoLon = testData[i].GEO_LON;
   var geoLat = testData[i].GEO_LAT;
   var geoLonNum = parseFloat(geoLon); //convert string numbers to actual numbers
@@ -235,7 +245,17 @@ for (var i = 0; i < testData.length; i++) {
     if (nwLonQuadData <= geoLonNum && geoLonNum <= seLonQuadData && nwLatQuadData >= geoLatNum && geoLatNum >= seLatQuadData) { //testing if point is within quadrent boundary
       quadData[y].crimeCount = quadData[y].crimeCount + 1; //add an additional crime to this quadrent
       quadData[y].indexList = quadData[y].indexList + ',' + index;
-      //console.log('xxx' + y);
+      //start checking for crime types
+      if(crimeType == 'aggravated-assault' || crimeType == 'murder'){ quadData[y].aggravatedAssault++; } //set crime counts to quadrant data
+      else if(crimeType == 'auto-theft'){ quadData[y].autoTheft++; }
+      else if(crimeType == 'burglary'){ quadData[y].burglary++; }
+      else if(crimeType == 'drug-alcohol'){ quadData[y].drugAlcohol++; }
+      else if(crimeType == 'larceny'){ quadData[y].larceny++; }
+      else if(crimeType == 'public-disorder'){ quadData[y].publicDisorder++; }
+      else if(crimeType == 'robbery'){ quadData[y].robbery++; }
+      else if(crimeType == 'theft-from-motor-vehicle'){ quadData[y].theftFromVehicle++; }
+      else { quadData[y].allOtherCrimes++; }
+      //end checking for crime types
     }
   }
 
