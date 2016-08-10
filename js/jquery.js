@@ -267,8 +267,8 @@ function checkVariable() {
 
   if(run==true){
     console.log(quadData);
-    for (var i = 0; i < quadData.length; i++) {
-      if(quadData[i].crimeCount == 2) { break; }
+    for (var i = 0; i < quadData.length; i++) { //for loop to draw multiple rectangles
+      if(quadData[i].crimeCount == 2) { break; } //when we get to low crime counts break the loop
       var color = getColor(quadData[i].percentageMax);
       if(quadData[i].percentageMax > 1) {color = 'hsl(0,100%,50%)'} //based on +1 tweaking to highCrimeCount above, setting values over 100% to highest intensity color
       console.log(color);
@@ -286,7 +286,7 @@ function checkVariable() {
           west:  quadData[i].nwLon
         }
       });
-    }
+    }//close for loop for drawing multiple rectangles
   }
 
 }
@@ -331,4 +331,6 @@ function initMap() {
     center: {lat: 39.7392, lng: -104.9903},
     mapTypeId: 'terrain'
   });
+  infoWindow = new google.maps.InfoWindow();
+
 }

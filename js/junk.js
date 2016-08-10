@@ -172,3 +172,69 @@ console.log(quadData);
   <button type="submit" class="btn btn-default">Submit</button>
 </form>
 </div>
+
+//Draw Quadrant Rectangles with hotspot coloring----------------------------------------------------
+var rectangles = [];
+function checkVariable() {
+
+  if(run==true){
+    console.log(quadData);
+    for (var i = 0; i < quadData.length; i++) { //for loop to draw multiple rectangles
+      if(quadData[i].crimeCount == 2) { break; } //when we get to low crime counts break the loop
+      var color = getColor(quadData[i].percentageMax);
+      if(quadData[i].percentageMax > 1) {color = 'hsl(0,100%,50%)'} //based on +1 tweaking to highCrimeCount above, setting values over 100% to highest intensity color
+      console.log(color);
+      rectangles[i] = new google.maps.Rectangle({
+        strokeColor: color,
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: color,
+        fillOpacity: 0.35,
+        map: map,
+        bounds: {
+          north: quadData[i].neLat,
+          south: quadData[i].seLat,
+          east:  quadData[i].neLon,
+          west:  quadData[i].nwLon
+        }
+      });
+    }//close for loop for drawing multiple rectangles
+  }
+
+}
+
+setTimeout(checkVariable,1000); //check if run variable is set after every second
+//Close Draw Quadrant Rectangles with hotspot coloring----------------------------------------------
+
+
+// New Google map (Initial Load)--------------------------------------------------------------------
+window.map;
+
+function initMap() {
+
+  console.log('mapinit');
+  window.map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: {lat: 39.7392, lng: -104.9903},
+    mapTypeId: 'terrain'
+  });
+}
+//close new google map
+
+//correct event listner adding before close of for loop
+
+let rect = rectangles[i];
+rectangles[i].addListener('click', function() {
+  var ne = rect.getBounds().getNorthEast();
+  //var sw = rectangle.getBounds().getSouthWest();
+console.log(rect);
+  var contentString = '<b>Rectangle moved.</b><br>';
+
+  // Set the info window's content and position.
+  infoWindow.setContent(contentString);
+  infoWindow.setPosition(ne);
+
+  infoWindow.open(map);
+});
+
+//close event listner adding before close of for loop
