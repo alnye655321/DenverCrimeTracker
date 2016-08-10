@@ -19,8 +19,10 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
   </head>
   <body>
+    <div class="container">
+<!-- start bootstrap container -->
     <h1>Denver Crime Tracker</h1>
-
+<div class="row">
     <form>
       <div class="form-group">
        <label for="dayAPI">Select Day:</label>
@@ -65,21 +67,26 @@
      </div>
       <button type="submit" class="btn btn-default">Submit</button>
     </form>
+  </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div id="colorLegend"></div>
+    </div>
+    </div>
 
+<!-- close bootstrap container -->
+</div>
     <!-- scripts -->
-
-
-
     <script type="text/javascript" src="js/jquery.js"></script>
 
 
 
-
     <div id="map"></div>
+
+
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcRXHbInrdEXgjlkAsVh6S7iBPf0lHIIY&callback=initMap">
     </script>
-
 
   </body>
 </html>

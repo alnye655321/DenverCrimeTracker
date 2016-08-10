@@ -248,7 +248,7 @@ quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0]
     return b.crimeCount - a.crimeCount;
 });
 
-var highCrimeCount = quadData[0].crimeCount;
+var highCrimeCount = quadData[1].crimeCount; // !!! tweaking +1 to avoid abnormally high LoDo max !!!
 var CrimeCountArray = []; //push crime count values to array to find median, avg etc. later
 
 for (var i = 0; i < quadData.length; i++) {
@@ -270,6 +270,7 @@ function checkVariable() {
     for (var i = 0; i < quadData.length; i++) {
       if(quadData[i].crimeCount == 2) { break; }
       var color = getColor(quadData[i].percentageMax);
+      if(quadData[i].percentageMax > 1) {color = 'hsl(0,100%,50%)'} //based on +1 tweaking to highCrimeCount above, setting values over 100% to highest intensity color
       console.log(color);
       rectangles[i] = new google.maps.Rectangle({
         strokeColor: color,
@@ -296,9 +297,28 @@ setTimeout(checkVariable,1000); //check if run variable is set after every secon
 // end big algo ----------------------big algo----------------------------big algo------------------
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!---CloseAfter DPD API Call---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     });
-  });
-});
-//close Doc Ready-----------------------------------------------------------------------------------
+  });//Close form submit----------------------------------------------------------------------------
+
+  function displayColorLegend(value){ //build color legend display
+      //value from 0 to 1
+      var hue=((1-value)*120).toString(10);
+      return ["hsl(",hue,",100%,50%)"].join("");
+  }
+  var len=20;
+  for(var i=0; i<=len; i++){
+      var value=i/len;
+      var d=document.createElement('div');
+      //d.textContent="value="+value;
+      d.style.backgroundColor=displayColorLegend(value);
+      d.style.width = "4%";
+      d.style.height = "50px";
+      d.style.cssFloat = "left";
+      document.getElementById("colorLegend").appendChild(d);
+
+  }
+
+});//close Doc Ready--------------------------------------------------------------------------------
+
 
 // New Google map (Initial Load)--------------------------------------------------------------------
 window.map;
