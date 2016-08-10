@@ -21,7 +21,6 @@ function getColor(value){
     var hue=((1-value)*120).toString(10);
     return ["hsl(",hue,",100%,50%)"].join("");
 }
-console.log(getColor(.9));
 // close get set color based on decimal percentage
 
 //median function for array of numbers - returns average if even length array

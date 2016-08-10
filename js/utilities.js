@@ -8153,6 +8153,14 @@ function average(arr) {
 }
 //close average function
 
+//get set color based on decimal percentage - from green to red - hsl color can pass into google maps
+function getColor(value){
+    //value from 0 to 1
+    var hue=((1-value)*120).toString(10);
+    return ["hsl(",hue,",100%,50%)"].join("");
+}
+// close get set color based on decimal percentage
+
 //close functions---------------------------close functions-------------------close functions-------
 
 // big algo ---------------------------big algo---------------------------big algo------------------
@@ -8284,11 +8292,11 @@ var CrimeCountArray = []; //push crime count values to array to find median, avg
 
 for (var i = 0; i < quadData.length; i++) {
   if(quadData[i].crimeCount == 0) { break; } // stop loop once we start getting to empty data
-  quadData[i].percentageMax = (quadData[i].crimeCount / highCrimeCount) * 100 ; //set percentage of max crime quadrent
+  quadData[i].percentageMax = (quadData[i].crimeCount / highCrimeCount); //set percentage of max crime quadrent
   CrimeCountArray.push(quadData[i].crimeCount); //push crime count to array
 }
 //Close Set crime as percentage of highest crime count per quandrent--------------------------------
-var average = average(CrimeCountArray) + 1; // !!! Get rid of +1 !!!
+var average = average(CrimeCountArray);
 var run = true; //running the google map
 //console.log(quadData);
 
@@ -8301,7 +8309,7 @@ function initMap() {
 
   console.log('mapinit');
   window.map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 11,
+    zoom: 14,
     center: {lat: 39.7392, lng: -104.9903},
     mapTypeId: 'terrain'
   });
@@ -8314,11 +8322,13 @@ function checkVariable() {
     console.log(quadData);
     for (var i = 0; i < quadData.length; i++) {
       if(quadData[i].crimeCount == 2) { break; }
+      var color = getColor(quadData[i].percentageMax);
+      console.log(color);
       rectangles[i] = new google.maps.Rectangle({
-        strokeColor: '#FF0000',
+        strokeColor: color,
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#FF0000',
+        fillColor: color,
         fillOpacity: 0.35,
         map: map,
         bounds: {
