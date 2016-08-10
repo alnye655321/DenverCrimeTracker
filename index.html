@@ -19,55 +19,94 @@
     <link rel="stylesheet" type="text/css" href="css/main.css">
   </head>
   <body>
+
+<!-- Start Nav     -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+             <label for="dayAPI">Select Day:</label>
+             <select class="form-control" id="dayAPI">
+               <option>monday</option>
+               <option>tuesday</option>
+               <option>wednesday</option>
+               <option>thursday</option>
+               <option>friday</option>
+               <option>saturday</option>
+               <option>sunday</option>
+             </select>
+           </div>
+            <div class="form-group">
+             <label for="hourAPI">Select Hour:</label>
+             <select class="form-control" id="hourAPI">
+               <option>00</option>
+               <option>01</option>
+               <option>02</option>
+               <option>03</option>
+               <option>04</option>
+               <option>05</option>
+               <option>06</option>
+               <option>07</option>
+               <option>08</option>
+               <option>09</option>
+               <option>10</option>
+               <option>11</option>
+               <option>12</option>
+               <option>13</option>
+               <option>14</option>
+               <option>15</option>
+               <option>16</option>
+               <option>17</option>
+               <option>18</option>
+               <option>19</option>
+               <option>20</option>
+               <option>21</option>
+               <option>22</option>
+               <option>23</option>
+             </select>
+           </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <!-- <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar/">Default</a></li>
+            <li><a href="../navbar-static-top/">Static top</a></li>
+            <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
+          </ul> -->
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+<!-- End Nav -->
+
     <div class="container">
 <!-- start bootstrap container -->
-    <h1>Denver Crime Tracker</h1>
-<div class="row">
-    <form>
-      <div class="form-group">
-       <label for="dayAPI">Select Day:</label>
-       <select class="form-control" id="dayAPI">
-         <option>monday</option>
-         <option>tuesday</option>
-         <option>wednesday</option>
-         <option>thursday</option>
-         <option>friday</option>
-         <option>saturday</option>
-         <option>sunday</option>
-       </select>
-     </div>
-      <div class="form-group">
-       <label for="hourAPI">Select Hour:</label>
-       <select class="form-control" id="hourAPI">
-         <option>00</option>
-         <option>01</option>
-         <option>02</option>
-         <option>03</option>
-         <option>04</option>
-         <option>05</option>
-         <option>06</option>
-         <option>07</option>
-         <option>08</option>
-         <option>09</option>
-         <option>10</option>
-         <option>11</option>
-         <option>12</option>
-         <option>13</option>
-         <option>14</option>
-         <option>15</option>
-         <option>16</option>
-         <option>17</option>
-         <option>18</option>
-         <option>19</option>
-         <option>20</option>
-         <option>21</option>
-         <option>22</option>
-         <option>23</option>
-       </select>
-     </div>
-      <button type="submit" class="btn btn-default">Submit</button>
-    </form>
-  </div>
+
     <div class="row">
       <div class="col-md-12">
         <div id="colorLegend"></div>
