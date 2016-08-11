@@ -36,7 +36,7 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
             <li id="clickForOptions"><a href="#">Options</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#contact">Info</a></li>
           </ul>
           <form class="navbar-form navbar-right">
             <div class="form-group">
@@ -124,7 +124,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Advanced Options</h4>
+            <h4 class="modal-title">Advanced Options - Be Careful! :‑O</h4>
           </div>
           <div class="modal-body">
     <form class="form-inline">
@@ -133,6 +133,15 @@
         <img class="changeCursor" src="images/transp-inf.png" data-toggle="popover" title="About Square Meter Box" data-html="true"  data-content="<div><p>The square meter box dimensions control the grid layout covering Denver or the max gps boundary of data. All values are in meters. The default value is a 250 meter square box, roughly the size of a city block. Increasing this value will build a larger grid and also decrease processing time (ie. less square grids to fill boundary).</p><p>Range Allowed:</p><ul><li>Max: 2000</li><li>Min: 100</li></ul></div>"> </img>
         <input type="text" class="form-control" id="sqMeterBox" value="250">
       </div>
+
+      <div class="form-group">
+       <label for="dayAPI">Distance Formula:</label>
+       <img class="changeCursor" src="images/transp-inf.png" data-toggle="popover" title="About Distance Formula" data-html="true"  data-content='<div><p>Altering the distance formula will change the accuracy of distance calculations and alter the speed of processing. The Haversine is more intensive and more accurate. The Equirectangular Approximation formula should be used if performance is an issue (old computers/smartphones) or on very large crime datasets.</p><br><a href="https://en.wikipedia.org/wiki/Haversine_formula" target="_blank">Haversine Formula</a> <br><br> <a href="https://en.wikipedia.org/wiki/Equirectangular_projection" target="_blank">Equirectangular Approximation</a> </div>'> </img>
+       <select class="form-control" id="dayAPI">
+         <option>Haversine Formula - Great Circle Distance</option>
+         <option>Equirectangular Approximation</option>
+       </select>
+     </div>
 
           </div>
           <div class="modal-footer">
