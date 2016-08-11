@@ -16,6 +16,27 @@ $(document).ready(function() {
 window.map = new google.maps.Map(document.getElementById('map'), {
   zoom: 14,
   center: {lat: 39.7392, lng: -104.9903},
+  styles: [
+    {
+      featureType: 'all',
+      stylers: [
+        { saturation: -80 }
+      ]
+    },{
+      featureType: 'road.arterial',
+      elementType: 'geometry',
+      stylers: [
+        { hue: '#00ffee' },
+        { saturation: 50 }
+      ]
+    },{
+      featureType: 'poi.business',
+      elementType: 'labels',
+      stylers: [
+        { visibility: 'off' }
+      ]
+    }
+  ],
   mapTypeId: 'terrain'
 });
 
@@ -45,6 +66,7 @@ function distance(lon1,lat1,lon2,lat2){
   //return round(dk);
 }
 // close distance between 2 gps coordinates
+
 
 // convert degrees to radians
 function deg2rad(deg) {
@@ -180,7 +202,7 @@ var iAmount = (dist1 * dist2) / (0.25 * 0.25); //get the total sq km of area and
 console.log(iAmount);
 //end calc area of all data - return iteration number to fill quadrents-----------------------------
 
-//Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------------
+//Construct .25km or 250m quadrents covering Denver, or max GPS bounday(could be neighborhood or less)-----------------------------
 var quadData = []; // array of quadrent objects
 var newLon = minLon; // -105.048462
 var newLat = maxLat; // 39.7945448
@@ -272,7 +294,7 @@ quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0]
     return b.crimeCount - a.crimeCount;
 });
 
-var highCrimeCount = quadData[1].crimeCount; // !!! tweaking +1 to avoid abnormally high LoDo max !!!
+var highCrimeCount = quadData[1].crimeCount; // !!! tweaking [+1] to avoid abnormally high LoDo max !!!
 var CrimeCountArray = []; //push crime count values to array to find median, avg etc. later
 
 for (var i = 0; i < quadData.length; i++) {
@@ -325,7 +347,7 @@ function checkVariable() {
         infoWindow.setPosition(ne);
 
         infoWindow.open(map);
-        makeChart(percentCalc(quadTemp.allOtherCrimes,total), percentCalc(quadTemp.aggravatedAssault,total), percentCalc(quadTemp.autoTheft,total), percentCalc(quadTemp.burglary,total), percentCalc(quadTemp.drugAlcohol,total), percentCalc(quadTemp.larceny,total), percentCalc(quadTemp.publicDisorder,total), percentCalc(quadTemp.robbery,total), percentCalc(quadTemp.theftFromVehicle,total) );
+        makeChart(percentCalc(quadTemp.allOtherCrimes,total), percentCalc(quadTemp.aggravatedAssault,total), percentCalc(quadTemp.autoTheft,total), percentCalc(quadTemp.burglary,total), percentCalc(quadTemp.drugAlcohol,total), percentCalc(quadTemp.larceny,total), percentCalc(quadTemp.publicDisorder,total), percentCalc(quadTemp.robbery,total), percentCalc(quadTemp.theftFromVehicle,total), quadTemp.crimeCount );
       });
       //close adding event listners
     }//close for loop for drawing multiple rectangles
@@ -371,6 +393,27 @@ function initMap() {
   window.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
     center: {lat: 39.7392, lng: -104.9903},
+    styles: [
+      {
+        featureType: 'all',
+        stylers: [
+          { saturation: -80 }
+        ]
+      },{
+        featureType: 'road.arterial',
+        elementType: 'geometry',
+        stylers: [
+          { hue: '#00ffee' },
+          { saturation: 50 }
+        ]
+      },{
+        featureType: 'poi.business',
+        elementType: 'labels',
+        stylers: [
+          { visibility: 'off' }
+        ]
+      }
+    ],
     mapTypeId: 'terrain'
   });
   infoWindow = new google.maps.InfoWindow();
@@ -378,7 +421,7 @@ function initMap() {
 }
 
 //Chart Generator Function -----------------------------------------------------
-function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlcohol,larceny,publicDisorder,robbery,theftFromVehicle) {
+function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlcohol,larceny,publicDisorder,robbery,theftFromVehicle, crimeTots) {
     $('#container').highcharts({
         chart: {
             plotBackgroundColor: null,
@@ -387,7 +430,10 @@ function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlco
             type: 'pie'
         },
         title: {
-            text: 'Crime Data From Quadrant'
+            text: 'Crime Quadrant Data'
+        },
+        subtitle: {
+            text: 'Total Crime Count: ' + crimeTots
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -406,29 +452,29 @@ function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlco
             }
         },
         series: [{
-            name: 'Crimes',
+            name: 'Of Total',
             colorByPoint: true,
             data: [{
-                name: 'AllOtherCrimes',
+                name: 'All Other Crimes',
                 y: allOtherCrimes
             }, {
-                name: 'AggravatedAssault',
+                name: 'Aggravated Assault',
                 y: aggravatedAssault,
                 selected: true
             }, {
-                name: 'AutoTheft',
+                name: 'GTA',
                 y: autoTheft
             }, {
                 name: 'Burglary',
                 y: burglary
             }, {
-                name: 'Drug/Alcohol',
+                name: 'Drug / Alcohol',
                 y: drugAlcohol
             }, {
                 name: 'Larceny',
                 y: larceny
             }, {
-                name: 'PublicDisorder',
+                name: 'Public Disorder',
                 y: publicDisorder
 
             }, {
@@ -436,7 +482,7 @@ function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlco
                 y: robbery
 
             }, {
-                name: 'TheftFromVehicle',
+                name: 'Theft From Vehicle',
                 y: theftFromVehicle
 
             }]
@@ -444,36 +490,24 @@ function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlco
     });
 }
 //Close Chart Generator Function -----------------------------------------------
-
-// data: [{
-//     name: 'AllOtherCrimes',
-//     y: allOtherCrimes
-// }, {
-//     name: 'AggravatedAssault',
-//     y: aggravatedAssault,
-//     selected: true
-// }, {
-//     name: 'AutoTheft',
-//     y: autoTheft
-// }, {
-//     name: 'Burglary',
-//     y: burglary
-// }, {
-//     name: 'Drug/Alcohol',
-//     y: drugAlcohol
-// }, {
-//     name: 'Larceny',
-//     y: larceny
-// }, {
-//     name: 'PublicDisorder',
-//     y: publicDisorder
-//
-// }, {
-//     name: 'Robbery',
-//     y: robbery
-//
-// }, {
-//     name: 'TheftFromVehicle',
-//     y: theftFromVehicle
-//
-// }]
+// styles: [
+//   {
+//     featureType: 'all',
+//     stylers: [
+//       { saturation: -80 }
+//     ]
+//   },{
+//     featureType: 'road.arterial',
+//     elementType: 'geometry',
+//     stylers: [
+//       { hue: '#00ffee' },
+//       { saturation: 50 }
+//     ]
+//   },{
+//     featureType: 'poi.business',
+//     elementType: 'labels',
+//     stylers: [
+//       { visibility: 'off' }
+//     ]
+//   }
+// ]
