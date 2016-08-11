@@ -374,7 +374,7 @@ setTimeout(checkVariable,1000); //check if run variable is set after every secon
       var d=document.createElement('div');
       //d.textContent="value="+value;
       d.style.backgroundColor=displayColorLegend(value);
-      d.style.width = "4%";
+      d.style.width = "4.6%";
       d.style.height = "50px";
       d.style.cssFloat = "left";
       document.getElementById("colorLegend").appendChild(d);
