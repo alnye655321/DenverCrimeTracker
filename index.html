@@ -35,7 +35,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
+            <li id="clickForOptions"><a href="#">Options</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
           <form class="navbar-form navbar-right">
@@ -116,6 +116,45 @@
 
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcRXHbInrdEXgjlkAsVh6S7iBPf0lHIIY&callback=initMap">
+    </script>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Advanced Options</h4>
+          </div>
+          <div class="modal-body">
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="sqMeterBox">Square Meter Box</label>
+        <img class="changeCursor" src="images/transp-inf.png" data-toggle="popover" title="About Square Meter Box" data-html="true"  data-content="<div><p>The square meter box dimensions control the grid layout covering Denver or the max gps boundary of data. All values are in meters. The default value is a 250 meter square box, roughly the size of a city block. Increasing this value will build a larger grid and also decrease processing time (ie. less square grids to fill boundary).</p><p>Range Allowed:</p><ul><li>Max: 2000</li><li>Min: 100</li></ul></div>"> </img>
+        <input type="text" class="form-control" id="sqMeterBox" value="250">
+      </div>
+
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+            <button type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</button></form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+    $( "#clickForOptions" ).on( "click", function() {
+      $('#myModal').modal('show');
+    });
+    </script>
+
+<!-- init popover info windows in advanced option menu -->
+    <script>
+      $(function () {
+        $('[data-toggle="popover"]').popover()
+      })
     </script>
 
   </body>

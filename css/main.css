@@ -50,3 +50,10 @@ nav li {
   font-size: 3em;
 
 }
+
+.changeCursor {
+cursor:pointer;
+/*display: block;
+margin-left: auto;
+margin-right: auto;*/
+}

@@ -5,13 +5,19 @@ $(document).ready(function() {
   $('form').on('submit', function(event){
     event.preventDefault();
     var hourAPI = $('#hourAPI').val();
+    //set constants from advanced options form
+    var sqMeterBoxUser = parseInt($('#sqMeterBox').val());
+    if (sqMeterBoxUser < 100 || sqMeterBoxUser > 2000) { var SQUAREmeterBox = 0.00292; } //set default value to 250 sq m if user input is weird
+    else { var SQUAREmeterBox = sqMeterBoxUser * 0.00001168; }
 
+    //close constants from advanced options form
     $.ajax({
     method: 'GET',
     dataType: 'json',
     url: 'http://www.nyedesign.org/DenverCrimeAPI/index.php?day=friday&hour=' + hourAPI
     }).done(function (result){
       var testData = result.data;
+      console.log(SQUAREmeterBox);
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---After DPD API Call---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 window.map = new google.maps.Map(document.getElementById('map'), {
   zoom: 14,
@@ -97,13 +103,13 @@ function round(x) {
 
     var nwLon = lon;
     var nwLat = lat;
-    var seLon = lon + 0.00292;
-    var seLat = lat - 0.00292;
+    var seLon = lon + SQUAREmeterBox;
+    var seLat = lat - SQUAREmeterBox;
     var swLon = lon;
-    var swLat = lat - 0.00292;
-    var neLon = lon + 0.00292;
+    var swLat = lat - SQUAREmeterBox;
+    var neLon = lon + SQUAREmeterBox;
     var neLat = lat;
-
+//250 m should be 0.00292 in above value
 
   return [nwLon,nwLat,seLon,seLat,swLon,swLat,neLon,neLat];
 
@@ -224,7 +230,7 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   quadData[i].allData = returnArr[1] + ', ' + returnArr[0] + ' ' + returnArr[3] + ', ' + returnArr[2] + ' ' + returnArr[5] + ', ' + returnArr[4] + ' ' + returnArr[7] + ', ' + returnArr[6];
 
   if (quadData[i].neLon > maxLon ) { //if we exceed max distance east (maxLon) then reset to furthest west (minLon) and drop 250m in latitude
-    var newLat = maxLat - 0.00292 * rowCnt;
+    var newLat = maxLat - SQUAREmeterBox * rowCnt;
     var newLon = minLon;
     rowCnt++;
     //console.log('lon break: ' + i);
