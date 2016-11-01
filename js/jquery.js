@@ -1,7 +1,6 @@
 $(document).ready(function() {
-  console.log('sanity check within jquery.js');
 
-//using http://www.nyedesign.org/DenverCrimeAPI/index.php?day=friday&hour=05
+//example request: http://www.nyedesign.org/DenverCrimeAPI/index.php?day=friday&hour=05
   $('form').on('submit', function(event){
     event.preventDefault();
     var hourAPI = $('#hourAPI').val();
@@ -17,8 +16,7 @@ $(document).ready(function() {
     url: 'http://www.nyedesign.org/DenverCrimeAPI/index.php?day=friday&hour=' + hourAPI
     }).done(function (result){
       var testData = result.data;
-      console.log(SQUAREmeterBox);
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---After DPD API Call---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//After DPD API Call------------------------------------------------------------
 window.map = new google.maps.Map(document.getElementById('map'), {
   zoom: 14,
   center: {lat: 39.7392, lng: -104.9903},
@@ -46,9 +44,8 @@ window.map = new google.maps.Map(document.getElementById('map'), {
   mapTypeId: 'terrain'
 });
 
-//functions---------------------------functions-------------------------------functions-------------
+//functions---------------------------------------------------------------------
 //start distance between 2 gps coordinates
-// http://andrew.hedges.name/experiments/haversine/
 function distance(lon1,lat1,lon2,lat2){
 
   // convert coordinates to radians
@@ -61,18 +58,13 @@ function distance(lon1,lat1,lon2,lat2){
   var dlat = lat2Rad - lat1Rad;
   var dlon = lon2Rad - lon1Rad;
 
-  // heavy math
+  // great circle math
   var a  = Math.pow(Math.sin(dlat/2),2) + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.pow(Math.sin(dlon/2),2);
   var c  = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); // great circle distance in radians
   //var dk = c * 6373; // great circle distance in km
   return c * 6373; // great circle distance in km
-
-  // round the results down to the nearest 1/1000
-  //mi = round(dm);
-  //return round(dk);
 }
 // close distance between 2 gps coordinates
-
 
 // convert degrees to radians
 function deg2rad(deg) {
@@ -95,9 +87,6 @@ function round(x) {
   return Math.round( x * 1000) / 1000;
 }
 
-//console.log(distance(-104.9358971, 39.6750974, -104.9322724, 39.6778582 ));
-//var tempDist = distance(geoLon, geoLat, testData[y].GEO_LON, testData[y].GEO_LAN);
-
 //Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------------
   function boundBuilder(lon, lat) {
 
@@ -113,11 +102,6 @@ function round(x) {
 
   return [nwLon,nwLat,seLon,seLat,swLon,swLat,neLon,neLat];
 
-//http://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
-//   If your displacements aren't too great (less than a few kilometers) and you're not right at the poles, use the quick and dirty estimate
-// that 111,111 meters (111.111 km) in the y direction is 1 degree (of latitude) and 111,111 * cos(latitude) meters in the x direction
-// is 1 degree (of longitude). !!! I used 250m = 0.00292 degrees --> should be 250m = .00225 degrees. I altered based on great circle distance calc. Works out to 0.249551 km
-// 111,111m = 1 degree , 1m = .000009 degrees , 250m = .00225 degrees
   }
 //Close Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----------------------
 
@@ -153,11 +137,11 @@ function getColor(value){
 }
 // close get set color based on decimal percentage
 
-//close functions---------------------------close functions-------------------close functions-------
+//close functions---------------------------------------------------------------
 
-// big algo ---------------------------big algo---------------------------big algo------------------
+// main logic-------------------------------------------------------------------
 
-// Set Data Object Array !!! Removed--> !!! nearest neighbor & near neighbor distance values---------------------------
+// Set Data Object Array
 var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; // look for min and max values to define random coordinator generator range
 
   for (var i = 0; i < testData.length; i++) {
@@ -179,25 +163,20 @@ var maxLon = -100000000; var minLon = 0; var maxLat = 0; var minLat = 10000000; 
       }
     }
   }
-  //console.log('orig boundary'); console.log(maxLon); console.log(minLon); console.log(maxLat); console.log(minLat); console.log('close orig boundary');
-  console.log(testData.length);
-  console.log(testData);
-// End Set Data Object Array !!! Removed--> !!!nearest neighbor & near neighbor distance values-----------------------
+// End Set Data Object Array
 
-  if(maxLat > 39.791087) { maxLat = 39.791087; } // set max range of denver city limits - in case we get some weird gps data
-  if(minLat < 39.653177) { minLat = 39.653177; } // set max range of denver city limits - in case we get some weird gps data
-  if(minLon < -105.053244) { minLon = -105.053244; } // set max range of denver city limits - in case we get some weird gps data
-  if(maxLon > -104.825191) { maxLon = -104.825191; } // set max range of denver city limits - in case we get some weird gps data
-  console.log(maxLon); console.log(minLon); console.log(maxLat); console.log(minLat); //we have the radmon min max parameters for gps data points
+  if(maxLat > 39.791087) { maxLat = 39.791087; } // set max range of denver city limits
+  if(minLat < 39.653177) { minLat = 39.653177; }
+  if(minLon < -105.053244) { minLon = -105.053244; }
+  if(maxLon > -104.825191) { maxLon = -104.825191; }
 
-// calc area of all data - return iteration number to fill quadrents--------------------------------
+// calc area of all data - return iteration number to fill quadrents------------
 var dist1 = distance(minLon,maxLat,maxLon,maxLat);
 var dist2 = distance(minLon,maxLat,minLon,minLat);
 var iAmount = (dist1 * dist2) / (0.25 * 0.25); //get the total sq km of area and divide by 0.25km^2 (250m^2) quadrents to get amount of quadrents to create
-console.log(iAmount);
-//end calc area of all data - return iteration number to fill quadrents-----------------------------
+//end calc area of all data - return iteration number to fill quadrents---------
 
-//Construct .25km or 250m quadrents covering Denver, or max GPS bounday(could be neighborhood or less)-----------------------------
+//Construct .25km or 250m quadrents covering Denver, or max GPS bounday(could be neighborhood or less)
 var quadData = []; // array of quadrent objects
 var newLon = minLon; // -105.048462
 var newLat = maxLat; // 39.7945448
@@ -233,7 +212,6 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
     var newLat = maxLat - SQUAREmeterBox * rowCnt;
     var newLon = minLon;
     rowCnt++;
-    //console.log('lon break: ' + i);
   }
   else { //keep building quadrents in eastward direction
     var newLon = returnArr[6];
@@ -241,10 +219,9 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   }
 
 }
+//End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-----
 
-//End Construct .25km or 250m quadrents covering Denver, or max GPS bounday-------------------------
-
-//Fill in quad crime data counts - if within gps boundary increase the counts-----------------------
+//Fill in quad crime data counts - if within gps boundary increase the counts---
 for (var i = 0; i < testData.length; i++) {
   var index = testData[i].INDEX;
   var crimeType = testData[i].OFFENSE_CATEGORY_ID;
@@ -252,8 +229,6 @@ for (var i = 0; i < testData.length; i++) {
   var geoLat = testData[i].GEO_LAT;
   var geoLonNum = parseFloat(geoLon); //convert string numbers to actual numbers
   var geoLatNum = parseFloat(geoLat); //convert string numbers to actual numbers
-  //console.log('origLon'); console.log(geoLonNum); console.log('origLon');
-  //console.log('origLat'); console.log(geoLatNum); console.log('origLat');
 
   for (var y = 0; y < quadData.length; y++) { //quadData.length
 
@@ -262,7 +237,6 @@ for (var i = 0; i < testData.length; i++) {
     var seLonQuadData = quadData[y].seLon;
     var seLatQuadData = quadData[y].seLat;
 
-//console.log(nwLatQuadData); console.log(swLatQuadData); console.log(nwLonQuadData); console.log(neLonQuadData);
     if (nwLonQuadData <= geoLonNum && geoLonNum <= seLonQuadData && nwLatQuadData >= geoLatNum && geoLatNum >= seLatQuadData) { //testing if point is within quadrent boundary
       quadData[y].crimeCount = quadData[y].crimeCount + 1; //add an additional crime to this quadrent
       quadData[y].indexList = quadData[y].indexList + ',' + index;
@@ -281,10 +255,9 @@ for (var i = 0; i < testData.length; i++) {
   }
 
 }
-//console.log(quadData); --> unsorted array - in original quadrent pattern - left to right starting in north west corner
-//close Fill in quad crime data counts--------------------------------------------------------------
+//close Fill in quad crime data counts------------------------------------------
 
-//Set crime as percentage of highest crime count per quandrent--------------------------------------
+//Set crime as percentage of highest crime count per quandrent------------------
 quadData.sort(function(a, b) { // sort by descending crime count --> quadData[0].crimeCount = highest amount of crime in quadrent
     return b.crimeCount - a.crimeCount;
 });
@@ -297,22 +270,19 @@ for (var i = 0; i < quadData.length; i++) {
   quadData[i].percentageMax = (quadData[i].crimeCount / highCrimeCount); //set percentage of max crime quadrent
   CrimeCountArray.push(quadData[i].crimeCount); //push crime count to array
 }
-//Close Set crime as percentage of highest crime count per quandrent--------------------------------
+//Close Set crime as percentage of highest crime count per quandrent------------
 var average = average(CrimeCountArray);
 var run = true; //running the google map
-//console.log(quadData);
 
-//Draw Quadrant Rectangles with hotspot coloring----------------------------------------------------
+//Draw Quadrant Rectangles with hotspot coloring--------------------------------
 var rectangles = [];
 function checkVariable() {
 
   if(run==true){
-    console.log(quadData);
     for (var i = 0; i < quadData.length; i++) { //for loop to draw multiple rectangles
       if(quadData[i].crimeCount == 2) { break; } //when we get to low crime counts break the loop
       var color = getColor(quadData[i].percentageMax);
       if(quadData[i].percentageMax > 1) {color = 'hsl(0,100%,50%)'} //based on +1 tweaking to highCrimeCount above, setting values over 100% to highest intensity color
-      console.log(color);
       rectangles[i] = new google.maps.Rectangle({
         strokeColor: color,
         strokeOpacity: 0.8,
@@ -333,7 +303,6 @@ function checkVariable() {
       rectangles[i].addListener('click', function() {
         var ne = rect.getBounds().getNorthEast();
         //var sw = rectangle.getBounds().getSouthWest();
-      //console.log(rect);
         let total = quadTemp.allOtherCrimes + quadTemp.aggravatedAssault + quadTemp.autoTheft + quadTemp.burglary + quadTemp.drugAlcohol + quadTemp.larceny + quadTemp.publicDisorder + quadTemp.robbery + quadTemp.theftFromVehicle;
         var contentString = '<div id="container" style="min-width: 600px; height: 400px; max-width: 600px; margin: 0 auto"></div>';
 
@@ -351,12 +320,12 @@ function checkVariable() {
 }
 
 setTimeout(checkVariable,1000); //check if run variable is set after every second
-//Close Draw Quadrant Rectangles with hotspot coloring----------------------------------------------
+//Close Draw Quadrant Rectangles with hotspot coloring--------------------------
 
-// end big algo ----------------------big algo----------------------------big algo------------------
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!---CloseAfter DPD API Call---!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// end main logic---------------------------------------------------------------
+//CloseAfter DPD API Call
     });
-  });//Close form submit----------------------------------------------------------------------------
+  });//Close form submit
 
   function displayColorLegend(value){ //build color legend display
       //value from 0 to 1
@@ -376,15 +345,14 @@ setTimeout(checkVariable,1000); //check if run variable is set after every secon
 
   }
 
-});//close Doc Ready--------------------------------------------------------------------------------
+});//close Doc Ready
 
 
-// New Google map (Initial Load)--------------------------------------------------------------------
+// New Google map (Initial Load)------------------------------------------------
 window.map;
 
 function initMap() {
 
-  console.log('mapinit');
   window.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 14,
     center: {lat: 39.7392, lng: -104.9903},
@@ -484,25 +452,3 @@ function makeChart (allOtherCrimes,aggravatedAssault,autoTheft,burglary,drugAlco
         }]
     });
 }
-//Close Chart Generator Function -----------------------------------------------
-// styles: [
-//   {
-//     featureType: 'all',
-//     stylers: [
-//       { saturation: -80 }
-//     ]
-//   },{
-//     featureType: 'road.arterial',
-//     elementType: 'geometry',
-//     stylers: [
-//       { hue: '#00ffee' },
-//       { saturation: 50 }
-//     ]
-//   },{
-//     featureType: 'poi.business',
-//     elementType: 'labels',
-//     stylers: [
-//       { visibility: 'off' }
-//     ]
-//   }
-// ]
