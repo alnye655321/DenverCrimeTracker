@@ -191,21 +191,12 @@ for (var i = 0; i < iAmount; i++) { //iAmount generated above from distance form
   quadData[i].percentageMax = 0; // set initial property of the percentage of max crime quadrent
   quadData[i].allOtherCrimes = 0; //set initial counts for types of crimes
   quadData[i].aggravatedAssault = 0; //set initial counts for types of crimes...
-  quadData[i].autoTheft = 0;
-  quadData[i].burglary = 0;
-  quadData[i].drugAlcohol = 0;
-  quadData[i].larceny = 0;
-  quadData[i].publicDisorder = 0;
-  quadData[i].robbery = 0;
-  quadData[i].theftFromVehicle = 0;
-  quadData[i].nwLon = returnArr[0];
-  quadData[i].nwLat = returnArr[1];
-  quadData[i].seLon = returnArr[2];
-  quadData[i].seLat = returnArr[3];
-  quadData[i].swLon = returnArr[4];
-  quadData[i].swLat = returnArr[5];
-  quadData[i].neLon = returnArr[6];
-  quadData[i].neLat = returnArr[7];
+  quadData[i].autoTheft = 0; quadData[i].burglary = 0; quadData[i].drugAlcohol = 0;
+  quadData[i].larceny = 0; quadData[i].publicDisorder = 0; quadData[i].robbery = 0; quadData[i].theftFromVehicle = 0;
+  quadData[i].nwLon = returnArr[0]; quadData[i].nwLat = returnArr[1]; quadData[i].seLon = returnArr[2];
+  quadData[i].seLat = returnArr[3];  quadData[i].swLon = returnArr[4];  quadData[i].swLat = returnArr[5];
+  quadData[i].neLon = returnArr[6];  quadData[i].neLat = returnArr[7];
+
   quadData[i].allData = returnArr[1] + ', ' + returnArr[0] + ' ' + returnArr[3] + ', ' + returnArr[2] + ' ' + returnArr[5] + ', ' + returnArr[4] + ' ' + returnArr[7] + ', ' + returnArr[6];
 
   if (quadData[i].neLon > maxLon ) { //if we exceed max distance east (maxLon) then reset to furthest west (minLon) and drop 250m in latitude
@@ -278,7 +269,6 @@ var run = true; //running the google map
 var rectangles = [];
 function checkVariable() {
 
-  if(run==true){
     for (var i = 0; i < quadData.length; i++) { //for loop to draw multiple rectangles
       if(quadData[i].crimeCount == 2) { break; } //when we get to low crime counts break the loop
       var color = getColor(quadData[i].percentageMax);
@@ -315,11 +305,9 @@ function checkVariable() {
       });
       //close adding event listners
     }//close for loop for drawing multiple rectangles
-  }
-
 }
 
-setTimeout(checkVariable,1000); //check if run variable is set after every second
+setTimeout(checkVariable,1000);
 //Close Draw Quadrant Rectangles with hotspot coloring--------------------------
 
 // end main logic---------------------------------------------------------------
